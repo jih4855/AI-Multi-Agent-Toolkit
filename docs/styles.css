@@ -238,6 +238,8 @@ html {
     border-right: 1px solid #2f3338;
     padding: 16px 16px;                /* 좌우 패딩도 증가 (12px → 16px) */
     z-index: 1020;                     /* sidebar도 적절한 z-index 설정 */
+    display: flex;                     /* flexbox 레이아웃 추가 */
+    flex-direction: column;            /* 세로 방향 배치 */
 }
 
 .sidebar-title {
@@ -251,6 +253,7 @@ html {
     list-style: none;
     padding-left: 0;
     margin: 0;
+    flex-grow: 1;              /* 남는 공간을 모두 차지 */
 }
 
 .sidebar li {
@@ -287,13 +290,14 @@ html {
 
 /* 사이드바 하단 링크 스타일 */
 .sidebar-footer {
-    position: absolute;
-    bottom: 20px;
-    left: 16px;
-    right: 16px;
+    margin-top: auto;        /* 가능한 아래쪽으로 밀어내기 */
+    padding-top: 30px;       /* 위쪽 여백 추가 */
+    padding-bottom: 20px;    /* 아래쪽 여백 추가 */
+    margin-left: 0;          /* 좌우 마진 제거 */
+    margin-right: 0;         /* 좌우 마진 제거 */
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;                /* 4px → 8px로 간격 증가 */
 }
 
 .sidebar-footer .sidebar-link {
@@ -389,5 +393,15 @@ details > div {
         height: auto;
         width: 100%;
         top: 0;
+    }
+
+    .sidebar-footer {
+        position: relative;  /* absolute → relative로 변경 */
+        bottom: auto;        /* bottom 제거 */
+        left: auto;          /* left 제거 */
+        right: auto;         /* right 제거 */
+        flex-direction: row; /* 세로 → 가로 배치 */
+        justify-content: space-around; /* 양쪽에 균등 배치 */
+        margin-top: 20px;    /* 위쪽 여백 추가 */
     }
 }
