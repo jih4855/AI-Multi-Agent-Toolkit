@@ -5,18 +5,18 @@ import json
 import glob
 import yt_dlp
 from rich.console import Console
-import re
+
 
 console = Console()
 
 class Audio:
-    def __init__(self, text_output="text", source_file="source_file"):
+    def __init__(self, text_output:str="text", source_file:str="source_file"):
         self.text_output = text_output
         self.source_file = source_file
 
 
     #음성파일을 텍스트로 변환하기
-    def transcribe_audio(self, whisper_model:str="large-v3", audio_extensions:list=["mp3","wav","m4a","flac","aac","ogg"]):
+    def transcribe_audio(self, whisper_model:str="large-v3", audio_extensions:list=["mp3","wav","m4a","flac","aac","ogg"]) -> json:
         from rich.progress import track 
 
         audio_file = []
@@ -77,7 +77,7 @@ class Audio:
         except Exception as e:
             print(f"Error: {e}")
 
-    def download_youtube_audio(self, urls=None, preferred_codec="mp3", preferred_quality="192"):
+    def download_youtube_audio(self, urls:str=None, preferred_codec:str="mp3", preferred_quality:str="192"):
         """YouTube 영상에서 음성만 추출"""
         # 저장 폴더 보장
         os.makedirs(self.source_file, exist_ok=True)
@@ -93,7 +93,21 @@ class Audio:
                 'preferredcodec': preferred_codec,
                 'preferredquality': preferred_quality,
             }],
-            'ignoreerrors': True
+            'ignoreerrors': True,
+            'verbose': False,  # 로그 줄이기
+            # YouTube 차단 우회 강화
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web'],
+                    'player_skip': ['configs'],
+                }
+            },
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
+            }
         }
         successful = []
         failed = []

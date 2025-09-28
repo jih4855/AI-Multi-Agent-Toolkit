@@ -3,7 +3,7 @@ import sqlite3
 
 
 class MemoryManager:
-    def __init__(self, db_path = "memory.db", session_id=None, messages=None):
+    def __init__(self, db_path: str = "memory.db", session_id: str = None, messages: list = None):
         self.db_path = db_path
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
@@ -24,8 +24,8 @@ class MemoryManager:
             )
         ''')
         self.conn.commit()
-    
-    def get_history(self, session_id):
+
+    def get_history(self, session_id: str):
         """
         특정 세션의 대화 기록을 가져옵니다.
         Args:
@@ -41,7 +41,7 @@ class MemoryManager:
         else:
             return []
 
-    def save_history(self, session_id, messages):
+    def save_history(self, session_id: str, messages: list):
         """
         대화 기록을 저장합니다.
         Args:

@@ -72,7 +72,7 @@ from module.llm_agent import LLM_Agent
 
 # Ollama 사용 (로컬, API 키 불필요)
 agent = LLM_Agent(model_name="gemma:2b", provider="ollama")
-response = agent.generate_response(
+response = agent(
     system_prompt="당신은 도움이 되는 비서입니다.",
     user_message="안녕하세요, 자기소개를 해주세요."
 )

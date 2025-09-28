@@ -21,7 +21,7 @@ def main():
     )
 
     urls = [
-        "https://youtu.be/KSC8CQCMuvk?si=TtSPawZJPeKClfTe"  # 여기에 실제 YouTube URL을 넣으세요.
+        "https://youtu.be/l33-y7NmszE?si=LGF1fybB6znUE3rf"  # 여기에 실제 YouTube URL을 넣으세요.
     ]
 
     try:
@@ -62,7 +62,7 @@ def main():
 
     dotenv.load_dotenv()
     # LLM 에이전트 생성 (변수명 변경!)
-    llm_agent = LLM_Agent(model_name="gemini-2.5-flash", provider="genai", api_key=os.getenv("GENAI_API_KEY"))
+    llm_agent = LLM_Agent(model_name="deepseek-v3.1:671b-cloud", provider="ollama")
 
     # 에이전트 정의
     agent_user_prompt = {
@@ -95,8 +95,9 @@ def main():
     order = ["agent1", "agent2", "agent3"]
 
     # 텍스트 도구 생성
-    text_tool = Text_tool(chunk_size=2000, overlap=200, max_length= 100)
+    text_tool = Text_tool(chunk_size=2000, overlap=200, max_length= 20)
     all_chunks = []
+    key_value = "text"  #변환된 STT 텍스트가 저장된 JSON 키 값 확인 후 설정
 
     # 모든 JSON 파일 읽고 청크 분할
     for json_file in json_files:
@@ -105,7 +106,7 @@ def main():
             with open(json_file, 'r', encoding='utf-8') as file:
                 json_content = json.load(file)
 
-            chunks = text_tool.split_text_with_overlap(json_content.get("text", ""))
+            chunks = text_tool.split_text_with_overlap(json_content.get(key_value, ""))
             all_chunks.extend(chunks)
             print(f"{len(chunks)}개 청크 생성")
 

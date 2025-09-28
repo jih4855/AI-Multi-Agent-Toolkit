@@ -3,48 +3,35 @@ import re
 import json
 
 class Text_tool:
-    def __init__(self, chunk_size=1000, overlap=0, max_length=None):
+    def __init__(self, chunk_size:int=1000, overlap:int=0, max_length:int=None):
         self.chunk_size = chunk_size
         self.overlap = overlap
         self.max_length = max_length
 
     
-    def split_text_with_overlap(self, text):
-        """
-        텍스트를 겹침을 포함해서 청크로 분할
-        """
+    def split_text_with_overlap(self, text: str) -> list:
         chunks = []
         start = 0
 
         while start < len(text):
-            # 현재 청크의 끝 위치 계산
+            prev_start = start
             end = start + self.chunk_size
-
-            # 텍스트가 남아있으면
-            if end < len(text):
-                # 문장 경계에서 자르기 (더 자연스럽게)
-                # 마지막 문장 끝 찾기
-                last_period = text.rfind('.', start, end)
-                last_question = text.rfind('?', start, end)
-                last_exclamation = text.rfind('!', start, end)
-
-                # 가장 뒤에 있는 문장 끝 찾기
-                sentence_end = max(last_period, last_question, last_exclamation)
-
-                if sentence_end > start:
-                    end = sentence_end + 1  # 문장부호 포함
 
             chunk = text[start:end]
             chunks.append(chunk.strip())
 
-            # 다음 청크 시작점 (겹침 고려)
             if end >= len(text):
                 break
-            
+
             start = end - self.overlap
+
+            # 안전장치
+            if start <= prev_start:
+                start = prev_start + self.chunk_size
+
         return chunks
 
-    def safe_filename(self, filename):
+    def safe_filename(self, filename:str) -> str:
         """파일명을 안전하게 변환"""
         # 특수문자 제거 및 공백을 언더스코어로 변경
         safe_name = re.sub(r'[<>:"/\\|?*]', '', filename)
@@ -58,7 +45,7 @@ class Text_tool:
         return safe_name
 
 
-    def save_result_json(self, final_output, output_filename, save_foldername):
+    def save_result_json(self, final_output: str, output_filename: str, save_foldername: str):
         safe_output_filename = self.safe_filename(output_filename)
         safe_save_foldername = self.safe_filename(save_foldername)
         if not os.path.exists(safe_save_foldername):
@@ -69,8 +56,7 @@ class Text_tool:
             if isinstance(final_output, str):
                 try:
                     #'''json ... ``` 형태의 JSON 추출 시도
-                    import re
-                    json_match = re.search(r'```json\s*(.*?)\s*```', final_output, re.DOTALL)
+                    json_match = re.search(r'```json\s*(.*?)\s*```', final_output, re.DOTALL) #LLM 출력에서 JSON 부분만 추출
                     if json_match:
                         json_str = json_match.group(1)
                     else:
